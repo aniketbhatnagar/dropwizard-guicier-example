@@ -1,10 +1,13 @@
 package com.hubspot.dropwizard.example;
 
 import com.google.inject.Binder;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.hubspot.dropwizard.example.extras.ExampleHealthCheck;
 import com.hubspot.dropwizard.example.extras.ExampleManaged;
 import com.hubspot.dropwizard.example.extras.ExampleServerLifecycleListener;
 import com.hubspot.dropwizard.example.extras.ExampleTask;
+import com.hubspot.dropwizard.example.extras.Service;
 import com.hubspot.dropwizard.example.filters.ExampleRequestFilter;
 import com.hubspot.dropwizard.example.filters.ExampleResponseFilter;
 import com.hubspot.dropwizard.example.resources.ExampleResource;
@@ -17,6 +20,7 @@ public class ExampleModule extends DropwizardAwareModule<ExampleConfiguration> {
 
   @Override
   public void configure(Binder binder) {
+
     // You can use the configuration to conditionally bind resources
     if (getConfiguration().bindResources()) {
       binder.bind(ExampleResource.class);
@@ -35,5 +39,11 @@ public class ExampleModule extends DropwizardAwareModule<ExampleConfiguration> {
       binder.bind(ExampleHealthCheck.class);
       binder.bind(ExampleServerLifecycleListener.class);
     }
+  }
+
+  @Provides
+  @Singleton
+  public Service createService(ExampleConfiguration exampleConfiguration) {
+    return new Service(exampleConfiguration);
   }
 }
